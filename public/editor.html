@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <style>
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type="number"] {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+
+    #resize-slider {
+      width: 100%;
+    }
+
+    [contenteditable="true"]:focus {
+      outline: 2px solid #3b82f6;
+    }
+
+    .group:hover .group-hover\:block {
+      display: block;
+    }
+
+    ul li button {
+      width: 100%;
+      padding: 0.5rem;
+      text-align: left;
+      background-color: white;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    ul li button:hover {
+      background-color: #f3f4f6;
+    }
+  </style>
+</head>
+
+<body class="bg-white p-8">
+  <div class="max-w-7xl mx-auto">
+    <h1 class="text-4xl font-bold mb-8 text-center md:text-left">HTML Editor</h1>
+    <div class="flex flex-col md:flex-row gap-6">
+      <!-- Left Panel -->
+      <div class="md:w-1/4 w-full space-y-4">
+        <div>
+          <h2 class="font-bold mb-2">HTML Template Elements</h2>
+          <div class="grid grid-cols-2 gap-2">
+            <!-- Dropdown Input Selector -->
+            <div class="relative group col-span-2">
+              <button class="bg-blue-500 text-white py-1 px-2 text-xs border border-black w-full">
+                Input Types
+              </button>
+              <div class="absolute left-0 mt-1 bg-white border border-gray-300 shadow-lg hidden group-hover:block z-10 w-full">
+                <ul class="text-sm">
+                  <li><button onclick="setDraggableInput('text', 'First Name')">First Name</button></li>
+                  <li><button onclick="setDraggableInput('text', 'Last Name')">Last Name</button></li>
+                  <li><button onclick="setDraggableInput('email', 'Email')">Email</button></li>
+                  <li><button onclick="setDraggableInput('tel', 'Phone Number')">Phone Number</button></li>
+                  <li><button onclick="setDraggableInput('password', 'Password')">Password</button></li>
+                  <li><button onclick="setDraggableInput('date', 'Date')">Date</button></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="col-span-2 mt-2">
+              <button id="input-preview" draggable="true" ondragstart="drag(event)" class="hidden bg-green-500 text-white py-1 px-2 text-xs border border-black w-full">
+                Drag: Input
+              </button>
+            </div>
+
+            <!-- Other Buttons -->
+            <button id="button" draggable="true" ondragstart="drag(event)" class="bg-blue-500 text-white py-1 px-2 text-xs border border-black">Button</button>
+            <button id="dropdown" draggable="true" ondragstart="drag(event)" class="bg-blue-500 text-white py-1 px-2 text-xs border border-black">Dropdown</button>
+            <button id="radio" draggable="true" ondragstart="drag(event)" class="bg-blue-500 text-white py-1 px-2 text-xs border border-black">Radio Btn</button>
+            <button id="heading" onclick="addMainHeading()" class="bg-blue-500 text-white py-1 px-2 text-xs border border-black col-span-2">Main Heading</button>
+            <button id="subheading" draggable="true" ondragstart="drag(event)" class="bg-blue-500 text-white py-1 px-2 text-xs border border-black col-span-2">Subheading</button>
+          </div>
+        </div>
+
+        <div>
+          <label for="resize-slider" class="block font-bold mb-1">Resize Input</label>
+          <input id="resize-slider" type="range" min="50" max="500" value="250" class="w-full" onchange="resizeInput(this.value)">
+        </div>
+
+        <div>
+          <label class="block font-bold mb-1">Form Grid Layout</label>
+          <input type="number" id="grid-rows" placeholder="Rows" class="border p-1 mb-2 w-full">
+          <input type="number" id="grid-cols" placeholder="Columns" class="border p-1 mb-2 w-full">
+          <button onclick="applyGridLayout()" class="bg-indigo-600 text-white py-1 px-2 w-full">Apply Grid</button>
+        </div>
+
+        <div>
+          <label class="block font-bold mb-1">Border Style</label>
+          <select onchange="applyFormBorder(this.value)" class="border p-2 w-full">
+            <option value="solid">Solid</option>
+            <option value="dashed">Dashed</option>
+            <option value="dotted">Dotted</option>
+            <option value="double">Double</option>
+            <option value="groove">Groove</option>
+          </select>
+        </div>
+
+        <div id="elements-list" class="p-4 border border-gray-300 min-h-32"></div>
+      </div>
+
+      <!-- Right Panel -->
+      <div class="md:w-3/4 w-full flex flex-col">
+        <h2 class="font-bold mb-2">HTML Viewer</h2>
+        <div id="html-viewer" class="border border-gray-400 min-h-96 p-4 space-y-4" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+        <div class="mt-4 flex flex-wrap gap-2 justify-end">
+          <button onclick="saveFormData()" class="bg-yellow-500 text-white py-2 px-4 rounded">Save</button>
+          <button type="submit" form="dynamic-form" class="bg-blue-500 text-white py-2 px-4 rounded">Submit</button>
+          <button onclick="downloadForm()" class="bg-green-600 text-white py-2 px-4 rounded">Download</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Add this after your buttons in the Right Panel -->
+<div class="mt-4">
+  <h2 class="font-bold mb-2">Live HTML Preview</h2>
+  <textarea id="html-raw-output" class="w-full border border-gray-400 p-2 h-64 font-mono text-sm" readonly></textarea>
+</div>
+
+<!-- Add Undo/Redo buttons -->
+<div class="mt-4 flex gap-2">
+  <button onclick="undo()" class="bg-gray-400 text-white py-2 px-4 rounded">Undo</button>
+  <button onclick="redo()" class="bg-gray-600 text-white py-2 px-4 rounded">Redo</button>
+</div>
+
+
+  <script>
+    let elementCounter = 0;
+    let selectedElementId = null;
+    let formInitialized = false;
+    let mainHeadingExists = false;
+    let selectedInputType = "text";
+    let selectedInputLabel = "Input";
+    let undoStack = [];
+    let redoStack = [];
+
+
+    function saveState() {
+    const form = document.getElementById("html-viewer").innerHTML;
+    undoStack.push(form);
+    redoStack = []; // clear redo stack on new action
+  }
+
+
+
+
+     function undo() {
+    if (undoStack.length === 0) return;
+    redoStack.push(document.getElementById("html-viewer").innerHTML);
+    const prev = undoStack.pop();
+    document.getElementById("html-viewer").innerHTML = prev;
+    updateHTMLPreview();
+    rebindDraggableWrappers();
+  }
+
+
+
+   function redo() {
+    if (redoStack.length === 0) return;
+    undoStack.push(document.getElementById("html-viewer").innerHTML);
+    const next = redoStack.pop();
+    document.getElementById("html-viewer").innerHTML = next;
+    updateHTMLPreview();
+    rebindDraggableWrappers();
+  }
+
+
+
+
+
+    function setDraggableInput(type, label) {
+      selectedInputType = type;
+      selectedInputLabel = label;
+      const previewBtn = document.getElementById("input-preview");
+      previewBtn.textContent = `Drag: ${label}`;
+      previewBtn.classList.remove("hidden");
+    }
+
+    function allowDrop(event) {
+      event.preventDefault();
+    const dropTarget = event.target.closest(".form-wrapper");
+    if (dropTarget && dropTarget !== draggedElement) {
+      dropTarget.parentNode.insertBefore(draggedElement, dropTarget.nextSibling);
+      saveState();
+      updateHTMLPreview();
+    }
+  }
+
+
+
+   let draggedElement = null;
+
+  function dragStartWrapper(event) {
+    draggedElement = event.target.closest(".form-wrapper");
+  }
+
+
+
+
+
+
+
+
+
+    function drag(event) {
+      const id = event.target.id;
+      if (id === "input-preview") {
+        event.dataTransfer.setData("type", "input");
+        event.dataTransfer.setData("inputType", selectedInputType);
+        event.dataTransfer.setData("label", selectedInputLabel);
+      } else {
+        event.dataTransfer.setData("text", id);
+      }
+    }
+
+    function drop(event) {
+      event.preventDefault();
+      const elementType = event.dataTransfer.getData("text") || event.dataTransfer.getData("type");
+
+      if (!formInitialized) {
+        initializeForm();
+      }
+
+      const dropTarget = document.getElementById("dynamic-form");
+
+      if (elementType === "heading") {
+        if (!mainHeadingExists) {
+          const heading = document.createElement("h2");
+          heading.setAttribute("contenteditable", "true");
+          heading.classList.add("text-2xl", "font-bold", "text-center", "mb-6");
+          heading.textContent = "Main Heading (Edit Me)";
+          heading.setAttribute("draggable", "true");
+          heading.setAttribute("ondragstart", "drag(event)");
+          heading.id = `main-heading`;
+          dropTarget.parentElement.insertBefore(heading, dropTarget);
+          mainHeadingExists = true;
+
+          saveState();
+        updateHTMLPreview();
+        } else {
+          alert("Main heading already exists.");
+        }
+        return;
+      }
+
+      elementCounter++;
+      const wrapper = document.createElement("div");
+      wrapper.setAttribute("id", `wrapper-${elementCounter}`);
+      wrapper.classList.add("mb-4", "w-full", "form-wrapper");
+      wrapper.setAttribute("draggable", "true");
+      wrapper.ondragstart = dragStartWrapper;
+
+      const label = document.createElement("div");
+      label.classList.add("font-bold", "mb-1");
+      label.setAttribute("contenteditable", "true");
+
+      let newElement;
+
+      if (elementType === "input") {
+        const inputType = event.dataTransfer.getData("inputType") || "text";
+        const labelText = event.dataTransfer.getData("label") || "Input";
+        newElement = document.createElement("input");
+        newElement.type = inputType;
+        newElement.name = `${labelText.toLowerCase().replace(" ", "_")}_${elementCounter}`;
+        newElement.classList.add("block", "p-2", "border", "border-black", "rounded", "w-full");
+        newElement.id = `element-${elementCounter}`;
+        newElement.onclick = () => {
+          selectedElementId = newElement.id;
+        };
+        label.textContent = labelText;
+      } else if (elementType === "button") {
+        newElement = document.createElement("div");
+        newElement.classList.add("space-y-2");
+        const singleButton = createEditableButton("Click Me");
+        singleButton.onclick = () => {
+          selectedElementId = singleButton.id;
+        };
+        singleButton.id = `element-${elementCounter}`;
+
+        const buttonGroup = document.createElement("div");
+        buttonGroup.classList.add("flex", "flex-wrap", "gap-2", "justify-center");
+        buttonGroup.appendChild(singleButton);
+
+        const addMoreBtn = document.createElement("button");
+        addMoreBtn.textContent = "+ Add Button";
+        addMoreBtn.type = "button";
+        addMoreBtn.classList.add("text-blue-600", "underline", "text-sm", "ml-2");
+        addMoreBtn.onclick = () => {
+          const newBtn = createEditableButton("New Button");
+          newBtn.onclick = () => {
+            selectedElementId = newBtn.id;
+          };
+          newBtn.id = `element-${++elementCounter}`;
+          buttonGroup.appendChild(newBtn);
+        };
+
+        newElement.appendChild(buttonGroup);
+        newElement.appendChild(addMoreBtn);
+        label.textContent = "Button Group";
+      }
+
+
+      else if (elementType === "dropdown") {
+  newElement = document.createElement("select");
+  newElement.classList.add("border", "p-2", "w-full");
+  newElement.id = `element-${elementCounter}`;
+  newElement.name = `dropdown_${elementCounter}`;
+  ["Option 1", "Option 2", "Option 3"].forEach(optText => {
+    const opt = document.createElement("option");
+    opt.textContent = optText;
+    newElement.appendChild(opt);
+  });
+  newElement.onclick = () => {
+    selectedElementId = newElement.id;
+  };
+  label.textContent = "Dropdown";
+}
+else if (elementType === "radio") {
+  newElement = document.createElement("div");
+  newElement.classList.add("space-y-1");
+  newElement.id = `element-${elementCounter}`;
+  ["Option A", "Option B", "Option C"].forEach((optText, i) => {
+    const radioWrapper = document.createElement("label");
+    radioWrapper.classList.add("block");
+
+    const radio = document.createElement("input");
+    radio.type = "radio";
+    radio.name = `radio_${elementCounter}`;
+    radio.classList.add("mr-2");
+
+    radioWrapper.appendChild(radio);
+    radioWrapper.append(optText);
+    newElement.appendChild(radioWrapper);
+  });
+  newElement.onclick = () => {
+    selectedElementId = newElement.id;
+  };
+  label.textContent = "Radio Group";
+}
+else if (elementType === "subheading") {
+  const subheading = document.createElement("h3");
+  subheading.setAttribute("contenteditable", "true");
+  subheading.classList.add("text-xl", "font-semibold", "mb-4");
+  subheading.textContent = "Subheading (Edit Me)";
+  subheading.setAttribute("draggable", "true");
+  subheading.setAttribute("ondragstart", "drag(event)");
+  subheading.id = `subheading-${elementCounter}`;
+  dropTarget.appendChild(subheading);
+  addToList("Subheading", subheading.id);
+  saveState();
+  updateHTMLPreview();
+  return;
+}
+
+
+      if (newElement) {
+        wrapper.appendChild(label);
+        wrapper.appendChild(newElement);
+        dropTarget.appendChild(wrapper);
+        addToList(label.textContent, `wrapper-${elementCounter}`);
+        saveState();
+      updateHTMLPreview();
+      }
+    }
+
+    function initializeForm() {
+      const formContainer = document.getElementById("html-viewer");
+      formContainer.innerHTML = "";
+      const form = document.createElement("form");
+      form.setAttribute("id", "dynamic-form");
+      form.classList.add("grid", "gap-4", "grid-cols-1");
+      formContainer.appendChild(form);
+      formInitialized = true;
+    }
+
+    function addToList(itemName, elementId) {
+      const list = document.getElementById("elements-list");
+      const listItem = document.createElement("li");
+      const button = document.createElement("button");
+      button.textContent = itemName;
+      button.classList.add("text-left", "font-bold");
+      button.onclick = () => {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.remove();
+          listItem.remove();
+          saveState();
+        updateHTMLPreview();
+        }
+      };
+      listItem.appendChild(button);
+      list.appendChild(listItem);
+    }
+
+    function applyGridLayout() {
+      const cols = parseInt(document.getElementById("grid-cols").value) || 1;
+      const formContainer = document.getElementById("dynamic-form");
+      formContainer.className = formContainer.className.replace(/grid-cols-\d+/g, '');
+      formContainer.classList.add("grid", `grid-cols-${cols}`, "gap-4");
+      saveState();
+    updateHTMLPreview();
+    }
+
+    function applyFormBorder(borderStyle) {
+      const formContainer = document.getElementById("html-viewer");
+      formContainer.style.border = `2px ${borderStyle} black`;
+    }
+
+    function resizeInput(value) {
+      if (!selectedElementId) return;
+      const selected = document.getElementById(selectedElementId);
+      if (selected) {
+        selected.style.width = `${value}px`;
+        const label = selected.closest("div").previousElementSibling;
+        if (label && label.classList.contains("font-bold")) {
+          label.style.width = `${value}px`;
+        }
+        saveState();
+      updateHTMLPreview();
+      }
+    }
+
+    function downloadForm() {
+      const formHTML = document.getElementById("html-viewer").innerHTML;
+      const blob = new Blob([formHTML], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "form.html";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function createEditableButton(text) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.classList.add("bg-blue-600", "text-white", "py-2", "px-4", "rounded", "focus:outline-none");
+      btn.setAttribute("contenteditable", "true");
+      btn.textContent = text;
+      btn.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          btn.blur();
+        }
+      });
+      return btn;
+    }
+
+    function updateHTMLPreview() {
+    const rawOutput = document.getElementById("html-raw-output");
+    const content = document.getElementById("html-viewer").innerHTML;
+    rawOutput.value = content;
+  }
+
+
+
+
+
+  function rebindDraggableWrappers() {
+    document.querySelectorAll(".form-wrapper").forEach(el => {
+      el.setAttribute("draggable", "true");
+      el.ondragstart = dragStartWrapper;
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    rebindDraggableWrappers();
+  });
+
+  document.addEventListener("submit", function (e) {
+    e.preventDefault();
+    alert("Form submitted (preview only)");
+  });
+
+
+
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,71 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-white p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-4">CREATE TRACKER</h1>
+        <div class="flex flex-col md:flex-row">
+            <div class="border border-gray-300 p-4 w-full md:w-1/2">
+                <div class="mb-4">
+                    <label class="block mb-2">Tracker name</label>
+                    <input type="text" class="border border-gray-300 p-2 w-full">
+                </div>
+                <div class="mb-4">
+                    <label class="block mb-2">HTML Template</label>
+                    <select class="border border-gray-300 p-2 w-full">
+                        <option>Select template</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block mb-2">Script name</label>
+                    <input type="text" class="border border-gray-300 p-2 w-full">
+                </div>
+                <div class="mb-4">
+                    <label class="block mb-2">Output duration (days)</label>
+                    <input type="text" class="border border-gray-300 p-2 w-full">
+                </div>
+                <div class="mb-4">
+                    <label class="block mb-2">Module</label>
+                    <select class="border border-gray-300 p-2 w-full">
+                        <option>Select module</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block mb-2">Submodule</label>
+                    <select class="border border-gray-300 p-2 w-full">
+                        <option>Select submodule</option>
+                    </select>
+                </div>
+            </div>
+            <div class="border border-gray-300 p-4 w-full md:w-1/2 mt-4 md:mt-0 md:ml-4">
+                <div class="flex items-center mb-2">
+                    <input type="checkbox" class="mr-2">
+                    <label>Create entry in tracker database</label>
+                </div>
+                <div class="flex items-center mb-2">
+                    <input type="checkbox" class="mr-2">
+                    <label>Create directory with script name</label>
+                </div>
+                <div class="flex items-center mb-2">
+                    <input type="checkbox" class="mr-2">
+                    <label>Copy sample code in it</label>
+                </div>
+            </div>
+        </div>
+        <div class="border border-gray-300 mt-4 p-4">
+            <div class="bg-blue-500 text-white p-2">Tracker name</div>
+        </div>
+    </div>
+</body>
+</html>

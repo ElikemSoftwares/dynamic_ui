@@ -1,0 +1,54 @@
+<html>
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body class="bg-white p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-4xl font-bold mb-4">HTML EDITOR</h1>
+        <div class="flex items-center mb-4">
+            <input type="checkbox" id="create-entry" class="mr-2">
+            <label for="create-entry" class="text-lg">Create entry in <a href="#" class="text-blue-600 underline">html_template</a></label>
+        </div>
+        <div class="border border-gray-400 p-4">
+            <div class="grid grid-cols-3 gap-4">
+                <div>
+                    <h2 class="font-bold mb-2">template_name</h2>
+                    <button class="bg-blue-500 text-white py-2 px-4 mb-2 w-full">input</button>
+                    <button class="bg-blue-500 text-white py-2 px-4 mb-2 w-full">date</button>
+                    <button class="bg-blue-500 text-white py-2 px-4 mb-2 w-full">button</button>
+                    <button class="bg-blue-500 text-white py-2 px-4 mb-2 w-full">dropdown</button>
+                    <button class="bg-blue-500 text-white py-2 px-4 mb-2 w-full">Radio btn</button>
+                    <button class="bg-blue-500 text-white py-2 px-4 mb-2 w-full">Heading</button>
+                    <button class="bg-blue-500 text-white py-2 px-4 mb-2 w-full">chart</button>
+                    <button class="bg-blue-500 text-white py-2 px-4 mb-2 w-full">dashboard</button>
+                </div>
+                <div class="col-span-2">
+                    <h2 class="font-bold mb-2">HTML Viewer</h2>
+                    <div class="border border-gray-400 h-64"></div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span>Input</span>
+                    <span>name</span>
+                    <span>type</span>
+                    <i class="fas fa-times text-blue-600 cursor-pointer"></i>
+                </div>
+                <div class="flex items-center justify-between mb-2">
+                    <span>date</span>
+                    <span>name</span>
+                    <span>type</span>
+                    <i class="fas fa-times text-blue-600 cursor-pointer"></i>
+                </div>
+                <div class="flex items-center justify-between mb-2">
+                    <span>button</span>
+                    <span>name</span>
+                    <span>type</span>
+                    <i class="fas fa-times text-blue-600 cursor-pointer"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
